@@ -105,4 +105,4 @@ function collision(head, array) {
     return false;
 }
 
-let game = setInterval(draw, 100);
+let game = setInterval(draw, 250);
