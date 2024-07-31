@@ -15,7 +15,7 @@ let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
 let gameInterval; // Переменная для хранения ID игрового цикла
-const gameSpeed = 250; // Скорость игры (мс)
+const gameSpeed = 100; // Скорость игры (мс)
 
 // Инициализация размеров холста
 function resizeCanvas() {
@@ -72,6 +72,11 @@ function update() {
 // Отрисовка на холсте
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Рисование границы
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     // Рисование змейки
     ctx.fillStyle = 'lime';
