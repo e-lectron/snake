@@ -17,10 +17,40 @@
             background-color: #000;
             margin: 0 auto;
         }
+
+        #restartButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: none; /* Скрыто по умолчанию */
+        }
+
+        #restartButton:hover {
+            background-color: #0056b3;
+        }
+
+        #gameOverText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            display: none; /* Скрыто по умолчанию */
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
+    <button id="restartButton">Restart</button>
+    <div id="gameOverText">Game Over</div>
     <script src="game.js"></script>
 </body>
 </html>
