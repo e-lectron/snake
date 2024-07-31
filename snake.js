@@ -5,7 +5,7 @@ const restartButton = document.getElementById('restartButton');
 const gameOverText = document.getElementById('gameOverText');
 
 const gridSize = 20;
-let tileCount = { x: 0, y: 0 };
+const tileCount = { x: canvas.width / gridSize, y: canvas.height / gridSize };
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
