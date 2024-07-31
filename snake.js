@@ -7,7 +7,7 @@ const scoreValue = document.getElementById('scoreValue');
 
 const gridSize = 20;
 let tileCount = { x: 0, y: 0 };
-const borderSize = 2; // Размер границы
+const borderSize = 5; // Размер границы
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
@@ -16,7 +16,7 @@ let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
 let gameInterval; // Переменная для хранения ID игрового цикла
-const gameSpeed = 100; // Скорость игры (мс)
+const gameSpeed = 200; // Скорость игры (мс)
 
 // Инициализация размеров холста
 function resizeCanvas() {
