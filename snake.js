@@ -15,6 +15,7 @@ let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
 let gameInterval; // Переменная для хранения ID игрового цикла
+const gameSpeed = 100; // Скорость игры (мс)
 
 // Инициализация размеров холста
 function resizeCanvas() {
@@ -106,9 +107,9 @@ function resetGame() {
     restartButton.style.display = 'none'; // Скрыть кнопку перезапуска
     gameOverText.style.display = 'none'; // Скрыть текст завершения игры
 
-    // Останавливаем текущий игровой цикл и запускаем новый
+    // Останавливаем старый игровой цикл и запускаем новый
     clearInterval(gameInterval);
-    gameInterval = setInterval(gameLoop, 100);
+    gameInterval = setInterval(gameLoop, gameSpeed);
 }
 
 // Завершение игры
