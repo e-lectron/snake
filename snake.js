@@ -3,15 +3,18 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const restartButton = document.getElementById('restartButton');
 const gameOverText = document.getElementById('gameOverText');
+const scoreValue = document.getElementById('scoreValue');
 
 const gridSize = 20;
-const tileCount = { x: canvas.width / gridSize, y: canvas.height / gridSize };
+let tileCount = { x: 0, y: 0 };
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
-let direction = 'RIGHT';
+let direction = null; // Устанавливаем начальное направление как null
 let nextDirection = 'RIGHT';
 let apple = { x: 5, y: 5 };
+let appleCount = 0; // Счётчик съеденных яблок
+let gameStarted = false; // Флаг, указывающий на начало игры
 
 // Инициализация размеров холста
 function resizeCanvas() {
@@ -25,13 +28,17 @@ window.addEventListener('resize', resizeCanvas);
 
 // Основная функция игры
 function gameLoop() {
-    update();
-    draw();
+    if (gameStarted) {
+        update();
+        draw();
+    }
     setTimeout(gameLoop, 100);
 }
 
 // Обновление состояния игры
 function update() {
+    if (!direction) return; // Если направление не задано, не обновляем
+
     // Обновление направления змейки
     direction = nextDirection;
 
@@ -61,7 +68,9 @@ function update() {
 
     // Проверка на съедание яблока
     if (head.x === apple.x && head.y === apple.y) {
+        appleCount++; // Увеличиваем счётчик яблок
         spawnApple();
+        updateScore();
     } else {
         snake.pop();
     }
@@ -90,18 +99,27 @@ function spawnApple() {
     };
 }
 
+// Обновление значения счётчика яблок
+function updateScore() {
+    scoreValue.textContent = appleCount;
+}
+
 // Сброс игры
 function resetGame() {
     snake = [{ x: 10, y: 10 }];
-    direction = 'RIGHT';
+    direction = null; // Устанавливаем начальное направление как null
     nextDirection = 'RIGHT';
+    appleCount = 0; // Сброс счётчика яблок
+    updateScore(); // Обновление счётчика на экране
     spawnApple();
+    gameStarted = false; // Игра ещё не началась
     restartButton.style.display = 'none'; // Скрыть кнопку перезапуска
     gameOverText.style.display = 'none'; // Скрыть текст завершения игры
 }
 
 // Завершение игры
 function gameOver() {
+    gameStarted = false; // Игра завершена
     restartButton.style.display = 'block'; // Показать кнопку перезапуска
     gameOverText.style.display = 'block'; // Показать текст завершения игры
 }
@@ -139,7 +157,10 @@ function handleTouchMove(event) {
 }
 
 // Обработка клика по кнопке перезапуска
-restartButton.addEventListener('click', resetGame);
+restartButton.addEventListener('click', () => {
+    resetGame();
+    gameStarted = true; // Начать игру после перезапуска
+});
 
 // Запуск игры
 resetGame();
