@@ -10,11 +10,9 @@ let tileCount = { x: 0, y: 0 };
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
-let direction = null; // Устанавливаем начальное направление как null
-let nextDirection = 'RIGHT';
+let direction = 'RIGHT'; // Устанавливаем начальное направление
 let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
-let gameStarted = false; // Флаг, указывающий на начало игры
 
 // Инициализация размеров холста
 function resizeCanvas() {
@@ -28,20 +26,13 @@ window.addEventListener('resize', resizeCanvas);
 
 // Основная функция игры
 function gameLoop() {
-    if (gameStarted) {
-        update();
-        draw();
-    }
+    update();
+    draw();
     setTimeout(gameLoop, 100);
 }
 
 // Обновление состояния игры
 function update() {
-    if (!direction) return; // Если направление не задано, не обновляем
-
-    // Обновление направления змейки
-    direction = nextDirection;
-
     // Перемещение змейки
     let head = { ...snake[0] };
     switch (direction) {
@@ -107,19 +98,16 @@ function updateScore() {
 // Сброс игры
 function resetGame() {
     snake = [{ x: 10, y: 10 }];
-    direction = null; // Устанавливаем начальное направление как null
-    nextDirection = 'RIGHT';
+    direction = 'RIGHT'; // Устанавливаем начальное направление
     appleCount = 0; // Сброс счётчика яблок
     updateScore(); // Обновление счётчика на экране
     spawnApple();
-    gameStarted = false; // Игра ещё не началась
     restartButton.style.display = 'none'; // Скрыть кнопку перезапуска
     gameOverText.style.display = 'none'; // Скрыть текст завершения игры
 }
 
 // Завершение игры
 function gameOver() {
-    gameStarted = false; // Игра завершена
     restartButton.style.display = 'block'; // Показать кнопку перезапуска
     gameOverText.style.display = 'block'; // Показать текст завершения игры
 }
@@ -144,10 +132,10 @@ function handleTouchMove(event) {
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
         // Горизонтальное движение
-        nextDirection = deltaX > 0 ? 'RIGHT' : 'LEFT';
+        direction = deltaX > 0 ? 'RIGHT' : 'LEFT';
     } else {
         // Вертикальное движение
-        nextDirection = deltaY > 0 ? 'DOWN' : 'UP';
+        direction = deltaY > 0 ? 'DOWN' : 'UP';
     }
 
     touchStartX = touch.clientX;
@@ -159,10 +147,9 @@ function handleTouchMove(event) {
 // Обработка клика по кнопке перезапуска
 restartButton.addEventListener('click', () => {
     resetGame();
-    gameStarted = true; // Начать игру после перезапуска
+    gameLoop(); // Начать новый цикл игры после перезапуска
 });
 
 // Запуск игры
 resetGame();
-gameStarted = true; // Игра начинается сразу после загрузки
 gameLoop();
