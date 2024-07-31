@@ -7,7 +7,7 @@ const scoreValue = document.getElementById('scoreValue');
 
 const gridSize = 20;
 let tileCount = { x: 0, y: 0 };
-const borderSize = 2; // Размер границы
+const borderSize = 5; // Размер границы
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
