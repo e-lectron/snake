@@ -7,7 +7,7 @@ const scoreValue = document.getElementById('scoreValue');
 
 const gridSize = 20;
 let tileCount = { x: 0, y: 0 };
-const borderSize = 5; // Размер границы
+const borderSize = 2; // Размер границы
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
@@ -16,7 +16,7 @@ let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
 let gameInterval; // Переменная для хранения ID игрового цикла
-const gameSpeed = 250; // Скорость игры (мс)
+const gameSpeed = 100; // Скорость игры (мс)
 
 // Инициализация размеров холста
 function resizeCanvas() {
@@ -88,6 +88,12 @@ function draw() {
     // Рисование яблока
     ctx.fillStyle = 'red';
     ctx.fillRect(apple.x * gridSize + borderSize, apple.y * gridSize + borderSize, gridSize, gridSize);
+
+    // Рисование счётчика
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(`Яблок: ${appleCount}`, canvas.width - 10, 20);
 }
 
 // Перемещение яблока на случайную позицию
@@ -145,10 +151,14 @@ function handleTouchMove(event) {
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
         // Горизонтальное движение
-        direction = deltaX > 0 ? 'RIGHT' : 'LEFT';
+        if (direction !== 'LEFT' && direction !== 'RIGHT') {
+            direction = deltaX > 0 ? 'RIGHT' : 'LEFT';
+        }
     } else {
         // Вертикальное движение
-        direction = deltaY > 0 ? 'DOWN' : 'UP';
+        if (direction !== 'UP' && direction !== 'DOWN') {
+            direction = deltaY > 0 ? 'DOWN' : 'UP';
+        }
     }
 
     touchStartX = touch.clientX;
