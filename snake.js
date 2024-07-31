@@ -150,6 +150,16 @@ restartButton.addEventListener('click', () => {
     gameLoop(); // Начать новый цикл игры после перезапуска
 });
 
+// Обработка клавиш
+document.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'ArrowUp': if (direction !== 'DOWN') direction = 'UP'; break;
+        case 'ArrowDown': if (direction !== 'UP') direction = 'DOWN'; break;
+        case 'ArrowLeft': if (direction !== 'RIGHT') direction = 'LEFT'; break;
+        case 'ArrowRight': if (direction !== 'LEFT') direction = 'RIGHT'; break;
+    }
+});
+
 // Запуск игры
 resetGame();
 gameLoop();
