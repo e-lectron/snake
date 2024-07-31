@@ -88,12 +88,6 @@ function draw() {
     // Рисование яблока
     ctx.fillStyle = 'red';
     ctx.fillRect(apple.x * gridSize + borderSize, apple.y * gridSize + borderSize, gridSize, gridSize);
-
-    // Рисование счётчика
-    ctx.fillStyle = 'white';
-    ctx.font = '20px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText(`Яблок: ${appleCount}`, canvas.width - 10, 20);
 }
 
 // Перемещение яблока на случайную позицию
