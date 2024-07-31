@@ -14,6 +14,8 @@ let direction = 'RIGHT'; // Устанавливаем начальное нап
 let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
+let gameInterval; // Переменная для хранения ID игрового цикла
+
 // Инициализация размеров холста
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -28,7 +30,6 @@ window.addEventListener('resize', resizeCanvas);
 function gameLoop() {
     update();
     draw();
-    setTimeout(gameLoop, 100);
 }
 
 // Обновление состояния игры
@@ -104,10 +105,15 @@ function resetGame() {
     spawnApple();
     restartButton.style.display = 'none'; // Скрыть кнопку перезапуска
     gameOverText.style.display = 'none'; // Скрыть текст завершения игры
+
+    // Останавливаем текущий игровой цикл и запускаем новый
+    clearInterval(gameInterval);
+    gameInterval = setInterval(gameLoop, 100);
 }
 
 // Завершение игры
 function gameOver() {
+    clearInterval(gameInterval); // Остановить игровой цикл
     restartButton.style.display = 'block'; // Показать кнопку перезапуска
     gameOverText.style.display = 'block'; // Показать текст завершения игры
 }
@@ -146,8 +152,7 @@ function handleTouchMove(event) {
 
 // Обработка клика по кнопке перезапуска
 restartButton.addEventListener('click', () => {
-    resetGame();
-    gameLoop(); // Начать новый цикл игры после перезапуска
+    resetGame(); // Перезапуск игры
 });
 
 // Обработка клавиш
@@ -162,4 +167,3 @@ document.addEventListener('keydown', (event) => {
 
 // Запуск игры
 resetGame();
-gameLoop();
