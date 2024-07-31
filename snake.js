@@ -164,4 +164,5 @@ restartButton.addEventListener('click', () => {
 
 // Запуск игры
 resetGame();
+gameStarted = true; // Игра начинается сразу после загрузки
 gameLoop();
