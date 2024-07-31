@@ -7,6 +7,7 @@ const scoreValue = document.getElementById('scoreValue');
 
 const gridSize = 20;
 let tileCount = { x: 0, y: 0 };
+const borderSize = 2; // Размер границы
 
 // Настройки змейки
 let snake = [{ x: 10, y: 10 }];
@@ -15,14 +16,14 @@ let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
 let gameInterval; // Переменная для хранения ID игрового цикла
-const gameSpeed = 100; // Скорость игры (мс)
+const gameSpeed = 250; // Скорость игры (мс)
 
 // Инициализация размеров холста
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    tileCount.x = Math.floor(canvas.width / gridSize);
-    tileCount.y = Math.floor(canvas.height / gridSize);
+    tileCount.x = Math.floor((canvas.width - 2 * borderSize) / gridSize);
+    tileCount.y = Math.floor((canvas.height - 2 * borderSize) / gridSize);
 }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
@@ -75,18 +76,18 @@ function draw() {
 
     // Рисование границы
     ctx.strokeStyle = 'white';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = borderSize;
+    ctx.strokeRect(borderSize / 2, borderSize / 2, canvas.width - borderSize, canvas.height - borderSize);
 
     // Рисование змейки
     ctx.fillStyle = 'lime';
     snake.forEach(segment => {
-        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+        ctx.fillRect(segment.x * gridSize + borderSize, segment.y * gridSize + borderSize, gridSize, gridSize);
     });
 
     // Рисование яблока
     ctx.fillStyle = 'red';
-    ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
+    ctx.fillRect(apple.x * gridSize + borderSize, apple.y * gridSize + borderSize, gridSize, gridSize);
 }
 
 // Перемещение яблока на случайную позицию
