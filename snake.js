@@ -1,108 +1,146 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const box = 20;
-let snake = [{ x: 9 * box, y: 10 * box }];
-let direction;
-let food = { x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box };
+// Основные переменные игры
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const restartButton = document.getElementById('restartButton');
+const gameOverText = document.getElementById('gameOverText');
 
-document.addEventListener("keydown", directionControl);
-document.addEventListener("touchstart", handleTouchStart, false);
-document.addEventListener("touchmove", handleTouchMove, false);
+const gridSize = 20;
+const tileCount = { x: canvas.width / gridSize, y: canvas.height / gridSize };
 
-let xDown = null;                                                        
-let yDown = null;
+// Настройки змейки
+let snake = [{ x: 10, y: 10 }];
+let direction = 'RIGHT';
+let nextDirection = 'RIGHT';
+let apple = { x: 5, y: 5 };
 
-function handleTouchStart(evt) {                                         
-    const firstTouch = evt.touches[0];                                      
-    xDown = firstTouch.clientX;                                      
-    yDown = firstTouch.clientY;                                      
-};                                                
+// Инициализация размеров холста
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    tileCount.x = Math.floor(canvas.width / gridSize);
+    tileCount.y = Math.floor(canvas.height / gridSize);
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-function handleTouchMove(evt) {
-    if ( ! xDown || ! yDown ) {
+// Основная функция игры
+function gameLoop() {
+    update();
+    draw();
+    setTimeout(gameLoop, 100);
+}
+
+// Обновление состояния игры
+function update() {
+    // Обновление направления змейки
+    direction = nextDirection;
+
+    // Перемещение змейки
+    let head = { ...snake[0] };
+    switch (direction) {
+        case 'UP': head.y -= 1; break;
+        case 'DOWN': head.y += 1; break;
+        case 'LEFT': head.x -= 1; break;
+        case 'RIGHT': head.x += 1; break;
+    }
+
+    // Проверка на выход за границы
+    if (head.x < 0 || head.x >= tileCount.x || head.y < 0 || head.y >= tileCount.y) {
+        gameOver();
         return;
     }
 
-    let xUp = evt.touches[0].clientX;                                    
-    let yUp = evt.touches[0].clientY;
-
-    let xDiff = xDown - xUp;
-    let yDiff = yDown - yUp;
-
-    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
-        if ( xDiff > 0 ) {
-            direction = "LEFT";
-        } else {
-            direction = "RIGHT";
-        }                       
-    } else {
-        if ( yDiff > 0 ) {
-            direction = "UP";
-        } else { 
-            direction = "DOWN";
-        }                                                                 
-    }
-    xDown = null;
-    yDown = null;                                             
-};
-
-function directionControl(event) {
-    if (event.keyCode === 37 && direction !== "RIGHT") {
-        direction = "LEFT";
-    } else if (event.keyCode === 38 && direction !== "DOWN") {
-        direction = "UP";
-    } else if (event.keyCode === 39 && direction !== "LEFT") {
-        direction = "RIGHT";
-    } else if (event.keyCode === 40 && direction !== "UP") {
-        direction = "DOWN";
-    }
-}
-
-function draw() {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = (i === 0) ? "#0f0" : "#fff";
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    // Проверка на столкновение с самим собой
+    if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        gameOver();
+        return;
     }
 
-    ctx.fillStyle = "#f00";
-    ctx.fillRect(food.x, food.y, box, box);
+    // Добавление новой головы змейки
+    snake.unshift(head);
 
-    let snakeX = snake[0].x;
-    let snakeY = snake[0].y;
-
-    if (direction === "LEFT") snakeX -= box;
-    if (direction === "UP") snakeY -= box;
-    if (direction === "RIGHT") snakeX += box;
-    if (direction === "DOWN") snakeY += box;
-
-    if (snakeX === food.x && snakeY === food.y) {
-        food = {
-            x: Math.floor(Math.random() * 19 + 1) * box,
-            y: Math.floor(Math.random() * 19 + 1) * box
-        };
+    // Проверка на съедание яблока
+    if (head.x === apple.x && head.y === apple.y) {
+        spawnApple();
     } else {
         snake.pop();
     }
-
-    const newHead = { x: snakeX, y: snakeY };
-
-    if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height || collision(newHead, snake)) {
-        clearInterval(game);
-    }
-
-    snake.unshift(newHead);
 }
 
-function collision(head, array) {
-    for (let i = 0; i < array.length; i++) {
-        if (head.x === array[i].x && head.y === array[i].y) {
-            return true;
-        }
-    }
-    return false;
+// Отрисовка на холсте
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Рисование змейки
+    ctx.fillStyle = 'lime';
+    snake.forEach(segment => {
+        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+    });
+
+    // Рисование яблока
+    ctx.fillStyle = 'red';
+    ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
 }
 
-let game = setInterval(draw, 250);
+// Перемещение яблока на случайную позицию
+function spawnApple() {
+    apple = {
+        x: Math.floor(Math.random() * tileCount.x),
+        y: Math.floor(Math.random() * tileCount.y)
+    };
+}
+
+// Сброс игры
+function resetGame() {
+    snake = [{ x: 10, y: 10 }];
+    direction = 'RIGHT';
+    nextDirection = 'RIGHT';
+    spawnApple();
+    restartButton.style.display = 'none'; // Скрыть кнопку перезапуска
+    gameOverText.style.display = 'none'; // Скрыть текст завершения игры
+}
+
+// Завершение игры
+function gameOver() {
+    restartButton.style.display = 'block'; // Показать кнопку перезапуска
+    gameOverText.style.display = 'block'; // Показать текст завершения игры
+}
+
+// Обработка событий касания
+document.addEventListener('touchstart', handleTouchStart, { passive: false });
+document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+function handleTouchStart(event) {
+    const touch = event.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+}
+
+function handleTouchMove(event) {
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Горизонтальное движение
+        nextDirection = deltaX > 0 ? 'RIGHT' : 'LEFT';
+    } else {
+        // Вертикальное движение
+        nextDirection = deltaY > 0 ? 'DOWN' : 'UP';
+    }
+
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+
+    event.preventDefault();
+}
+
+// Обработка клика по кнопке перезапуска
+restartButton.addEventListener('click', resetGame);
+
+// Запуск игры
+resetGame();
+gameLoop();
