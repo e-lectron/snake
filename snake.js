@@ -15,7 +15,7 @@ let apple = { x: 5, y: 5 };
 let appleCount = 0; // Счётчик съеденных яблок
 
 let gameInterval; // Переменная для хранения ID игрового цикла
-const gameSpeed = 100; // Скорость игры (мс)
+const gameSpeed = 250; // Скорость игры (мс)
 
 // Инициализация размеров холста
 function resizeCanvas() {
